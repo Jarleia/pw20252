@@ -1,0 +1,232 @@
+import { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
+import { GraduationCap, Plus, Trash2 } from "lucide-react";
+
+interface Student {
+  id: string;
+  name: string;
+  grades: number[];
+  average: number;
+}
+
+const Index = () => {
+  const [students, setStudents] = useState<Student[]>([]);
+  const [studentName, setStudentName] = useState("");
+  const [grades, setGrades] = useState<string[]>(["", "", ""]);
+
+  const calculateAverage = (gradesList: number[]) => {
+    if (gradesList.length === 0) return 0;
+    const sum = gradesList.reduce((acc, grade) => acc + grade, 0);
+    return sum / gradesList.length;
+  };
+
+  const getStatusBadge = (average: number) => {
+    if (average >= 7) {
+      return <Badge className="bg-success text-success-foreground">Aprovado</Badge>;
+    } else if (average >= 5) {
+      return <Badge className="bg-warning text-warning-foreground">Recuperação</Badge>;
+    } else {
+      return <Badge className="bg-destructive text-destructive-foreground">Reprovado</Badge>;
+    }
+  };
+
+  const handleAddStudent = () => {
+    if (!studentName.trim()) {
+      toast.error("Por favor, insira o nome do aluno");
+      return;
+    }
+
+    const validGrades = grades
+      .filter(g => g.trim() !== "")
+      .map(g => parseFloat(g));
+
+    if (validGrades.length === 0) {
+      toast.error("Por favor, insira pelo menos uma nota");
+      return;
+    }
+
+    if (validGrades.some(g => isNaN(g) || g < 0 || g > 10)) {
+      toast.error("As notas devem estar entre 0 e 10");
+      return;
+    }
+
+    const average = calculateAverage(validGrades);
+    const newStudent: Student = {
+      id: Date.now().toString(),
+      name: studentName,
+      grades: validGrades,
+      average,
+    };
+
+    setStudents([...students, newStudent]);
+    setStudentName("");
+    setGrades(["", "", ""]);
+    toast.success("Aluno adicionado com sucesso!");
+  };
+
+  const handleRemoveStudent = (id: string) => {
+    setStudents(students.filter(s => s.id !== id));
+    toast.success("Aluno removido");
+  };
+
+  const handleGradeChange = (index: number, value: string) => {
+    const newGrades = [...grades];
+    newGrades[index] = value;
+    setGrades(newGrades);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background to-secondary/20 py-8 px-4">
+      <div className="container max-w-6xl mx-auto">
+        <div className="text-center mb-8">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <GraduationCap className="w-12 h-12 text-primary" />
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Calculadora de Médias
+            </h1>
+          </div>
+          <p className="text-muted-foreground text-lg">
+            Calcule as médias parciais dos seus alunos de forma rápida e visual
+          </p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          <Card className="shadow-lg">
+            <CardHeader>
+              <CardTitle>Adicionar Aluno</CardTitle>
+              <CardDescription>Insira o nome e as notas do aluno</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="studentName">Nome do Aluno</Label>
+                <Input
+                  id="studentName"
+                  placeholder="Ex: João Silva"
+                  value={studentName}
+                  onChange={(e) => setStudentName(e.target.value)}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Notas (0-10)</Label>
+                <div className="grid grid-cols-3 gap-2">
+                  {grades.map((grade, index) => (
+                    <Input
+                      key={index}
+                      type="number"
+                      min="0"
+                      max="10"
+                      step="0.1"
+                      placeholder={`Nota ${index + 1}`}
+                      value={grade}
+                      onChange={(e) => handleGradeChange(index, e.target.value)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <Button
+                onClick={handleAddStudent}
+                className="w-full"
+                size="lg"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Adicionar Aluno
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-lg">
+            <CardHeader>
+              <CardTitle>Lista de Alunos</CardTitle>
+              <CardDescription>
+                {students.length === 0
+                  ? "Nenhum aluno cadastrado ainda"
+                  : `${students.length} aluno(s) cadastrado(s)`}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3 max-h-[400px] overflow-y-auto">
+                {students.map((student) => (
+                  <div
+                    key={student.id}
+                    className="p-4 rounded-lg border bg-card hover:shadow-md transition-all"
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-lg">{student.name}</h3>
+                        <div className="flex gap-2 mt-1 flex-wrap">
+                          {student.grades.map((grade, idx) => (
+                            <span
+                              key={idx}
+                              className="text-sm px-2 py-1 rounded bg-secondary text-secondary-foreground"
+                            >
+                              {grade.toFixed(1)}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleRemoveStudent(student.id)}
+                      >
+                        <Trash2 className="w-4 h-4 text-destructive" />
+                      </Button>
+                    </div>
+                    <div className="flex items-center justify-between mt-3 pt-3 border-t">
+                      <div className="text-sm">
+                        <span className="text-muted-foreground">Média: </span>
+                        <span className="font-bold text-lg">
+                          {student.average.toFixed(2)}
+                        </span>
+                      </div>
+                      {getStatusBadge(student.average)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {students.length > 0 && (
+          <Card className="mt-6 shadow-lg">
+            <CardHeader>
+              <CardTitle>Estatísticas da Turma</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="text-center p-4 rounded-lg bg-secondary/50">
+                  <p className="text-sm text-muted-foreground mb-1">Média Geral</p>
+                  <p className="text-2xl font-bold">
+                    {(students.reduce((acc, s) => acc + s.average, 0) / students.length).toFixed(2)}
+                  </p>
+                </div>
+                <div className="text-center p-4 rounded-lg bg-success/10">
+                  <p className="text-sm text-muted-foreground mb-1">Aprovados</p>
+                  <p className="text-2xl font-bold text-success">
+                    {students.filter(s => s.average >= 7).length}
+                  </p>
+                </div>
+                <div className="text-center p-4 rounded-lg bg-warning/10">
+                  <p className="text-sm text-muted-foreground mb-1">Em Recuperação</p>
+                  <p className="text-2xl font-bold text-warning">
+                    {students.filter(s => s.average >= 5 && s.average < 7).length}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Index;
