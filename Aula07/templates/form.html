@@ -1,0 +1,149 @@
+<html>
+<head>
+    <title>Login</title>
+    <style>
+      
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'time New Roman', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Fundo da página */
+body {
+  background:#2c3e50;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Container do login */
+.login-container {
+  background-color: #ffffff;
+  padding: 40px 30px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Título */
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+/* Estilo dos campos */
+.login-container input[type="email"],
+.login-container input[type="text"],
+.login-container input[type="password"] {
+  width: 100%;
+  padding: 12px 15px;
+  margin: 10px 0 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: 0.3s ease;
+}
+
+.login-container input:focus {
+  border-color: #4facfe;
+  outline: none;
+}
+
+/* Botão de login */
+.login-container button {
+  width: 100%;
+  padding: 12px;
+  background: #4facfe;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.link {
+  width: 100%;
+  padding: 12px;
+  background: #4facfe;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  text-decoration: none;
+  text-align: center;
+  margin-top: 20px;
+}
+
+
+.login-container button:hover {
+  background: #00c6ff;
+}
+
+
+/* Texto de rodapé */
+.login-container .footer {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+}
+
+
+/* Responsividade para dispositivos móveis */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 30px 20px;
+  }
+
+  .login-container h2 {
+    font-size: 22px;
+  }
+
+  .login-container input[type="text"],
+  .login-container input[type="password"] {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .login-container button,
+  .login-container .link {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+   </style>
+ </head>    
+    <body>
+       
+        <form action="{{url_for('saveForm')}}" method="post">
+            <div class="login-container">
+             <h2>Login</h2>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br><br>
+            <button>
+                Entrar
+            </button>
+           
+           <div    class="link" onclick="window.location.href = '/user/create'">
+            <a class="link"  href="{{ url_for('create_user') }}" > Criar Novo</a>
+
+           </div>
+
+           
+            
+            {{ msg }}
+            </div>
+        </form>
+    </body>
+</html>

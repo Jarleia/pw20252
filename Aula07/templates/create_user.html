@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block title %}
+Cadastro de Usuários
+  {% endblock %}
+
+{% block pesquisa %}
+        <form action="{{url_for('create_user_do')}}" method="post">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br><br>
+            <input type="submit" value="Salvando">
+        </form>
+{% endblock %}
+
+{% block resultado %}
+<table>
+      <thead>
+            <tr>
+                <th>Nome</th>
+                <th style="width: 30%">Email</th>
+                <th>Editar</th>
+                <th>Excluir</th>
+            </tr>
+        </thead>
+        {% for usuario in usuarios %}
+<tr>
+    <td> {{usuario.nome}} </td>
+    <td> {{usuario.username}}</td>
+    <td> Excluir</td>
+    <td> Editar </td>
+</tr>
+{% endfor %}
+
+</table>
+{% endblock %}

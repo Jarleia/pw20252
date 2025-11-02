@@ -5,14 +5,21 @@ from sqlalchemy.orm import sessionmaker
 
 app = Flask(__name__)
 
+app.config['SWAGGER'] = {
+    'title': 'API para Programação Web II',
+    'uiversion': 3
+}
 
 Session = sessionmaker(bind=engine)
 session = Session()
 
+from flasgger import Swagger
+swagger = Swagger(app)
 
 
 @app.route('/home')
 def home():
+  
     return "Hello, World!"
 
 @app.route('/cliente/<int:id>', methods=['GET'])
@@ -34,6 +41,7 @@ def form():
     return render_template('form.html')
 
 from controllers.UserController import *
+from controllers.ClienteController import *
 
 if __name__ == '__main__':
     Base.metadata.create_all(engine)

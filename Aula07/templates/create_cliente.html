@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block title %}
+Cadastro de Cliente
+  {% endblock %}
+
+{% block pesquisa %}
+        <form action="{{url_for('create_user_do')}}" method="post">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br><br>
+            <input type="submit" value="Salvando">
+        </form>
+{% endblock %}
+
+{% block resultado %}
+<table>
+      <thead>
+            <tr>
+                <th>Nome</th>
+                <th style="width: 30%">Email</th>
+                <th>Endereço</th>
+                <th>Editar</th>
+                <th>Excluir</th>
+            </tr>
+        </thead>
+<tr>
+    <td> Mateus </td>
+    <td> mentrixmax@gmail.com</td>
+    <td> Rua das palmeira</td>
+    <td> Excluir</td>
+    <td> Editar </td>
+</tr>
+
+</table>
+{% endblock %}

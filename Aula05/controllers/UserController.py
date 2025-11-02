@@ -5,6 +5,12 @@ from sqlalchemy.orm import sessionmaker
 from main import app, session
 
 
+def consulta_banco(username, password):
+    user =  session.query(User).filter_by(username=username, password=password).first()
+    if not user:
+        return False
+    return True
+
 @app.route('/user/create', methods=['GET'])
 def create_user():
     return render_template('create_user.html')

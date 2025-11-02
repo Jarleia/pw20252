@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block title %}
+Cadastro de Usuários
+  {% endblock %}
+
+{% block pesquisa %}
+        <form action="{{url_for('search_user')}}" method="post">
+            <label for="username">Email:</label>
+            <input type="email" id="email" name="email" ><br><br>
+           
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="name" ><br><br>
+            <input type="submit" value="Pesquisar">
+            <a href="{{url_for('new_user')}}">Novo</a>
+            
+        </form>
+
+        <div>
+            {% if msg %}
+             <p style="color: green;"> ERRO AQUI {{ msg }}</p>
+          {% endif %}
+      </div>
+
+{% endblock %}
+
+
+{% block resultado %}
+<table>
+      <thead>
+            <tr>
+                <th>Nome</th>
+                <th style="width: 30%">Email</th>
+                <th>Editar</th>
+                <th>Excluir</th>
+            </tr>
+        </thead>
+        {% for usuario in usuarios %}
+<tr>
+    <td> {{usuario.nome}} </td>
+    <td> {{usuario.username}}</td>
+    <td> <a  onclick="confirm('Deseja excluir?')" href="{{url_for('apagar_user', id=usuario.id)}}">Excluir</a> </td>
+    <td> Editar </td>
+</tr>
+{% endfor %}
+
+</table>
+{% endblock %}
