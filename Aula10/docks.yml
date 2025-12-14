@@ -1,0 +1,246 @@
+openapi: 3.0.3
+info:
+  title: Users API
+  description: API para gerenciamento de usuários
+  version: 1.0.0
+  contact:
+    name: Suporte API
+    email: suporte@example.com
+
+servers:
+  - url: http://localhost:5001
+    description: Servidor de desenvolvimento
+  - url: https://api.example.com
+    description: Servidor de produção
+
+paths:
+  /v1/users:
+    post:
+      summary: Criar um novo usuário
+      description: Cria um novo usuário no sistema
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+            examples:
+              userExample:
+                summary: Exemplo de criação de usuário
+                value:
+                  name: "João Silva"
+                  email: "joao@example.com"
+                  age: 30
+      responses:
+        '201':
+          description: Usuário criado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+              examples:
+                successExample:
+                  summary: Usuário criado
+                  value:
+                    id: 1
+                    name: "João Silva"
+                    email: "joao@example.com"
+                    age: 30
+                    created_at: "2023-10-01T10:00:00Z"
+        '400':
+          description: Erro na requisição
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                validationError:
+                  summary: Erro de validação
+                  value:
+                    error: "VALIDATION_ERROR"
+                    message: "Email já cadastrado"
+                    details:
+                      email: "Este email já está em uso"
+                missingFields:
+                  summary: Campos obrigatórios faltando
+                  value:
+                    error: "MISSING_FIELDS"
+                    message: "Campos obrigatórios não informados"
+                    details:
+                      name: "Nome é obrigatório"
+                      email: "Email é obrigatório"
+
+  /v1/users/{id}:
+    get:
+      summary: Buscar usuário por ID
+      description: Retorna os detalhes de um usuário específico
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do usuário
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+          examples:
+            validId:
+              summary: ID válido
+              value: 1
+            invalidId:
+              summary: ID inválido
+              value: 999
+      responses:
+        '200':
+          description: Usuário encontrado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+              examples:
+                userFound:
+                  summary: Usuário encontrado
+                  value:
+                    id: 1
+                    name: "João Silva"
+                    email: "joao@example.com"
+                    age: 30
+                    created_at: "2023-10-01T10:00:00Z"
+        '400':
+          description: Erro na requisição
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                invalidId:
+                  summary: ID inválido
+                  value:
+                    error: "INVALID_ID"
+                    message: "ID deve ser um número inteiro positivo"
+        '404':
+          description: Usuário não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                userNotFound:
+                  summary: Usuário não encontrado
+                  value:
+                    error: "USER_NOT_FOUND"
+                    message: "Usuário com ID 999 não encontrado"
+
+components:
+  schemas:
+    UserCreate:
+      type: object
+      required:
+        - name
+        - email
+      properties:
+        name:
+          type: string
+          description: Nome completo do usuário
+          minLength: 2
+          maxLength: 100
+          example: "João Silva"
+        email:
+          type: string
+          format: email
+          description: Email do usuário
+          maxLength: 255
+          example: "joao@example.com"
+        age:
+          type: integer
+          description: Idade do usuário
+          minimum: 0
+          maximum: 150
+          example: 30
+      additionalProperties: false
+
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: ID único do usuário
+          example: 1
+        name:
+          type: string
+          description: Nome completo do usuário
+          example: "João Silva"
+        email:
+          type: string
+          format: email
+          description: Email do usuário
+          example: "joao@example.com"
+        age:
+          type: integer
+          description: Idade do usuário
+          example: 30
+        created_at:
+          type: string
+          format: date-time
+          description: Data de criação do usuário
+          example: "2023-10-01T10:00:00Z"
+      required:
+        - id
+        - name
+        - email
+        - created_at
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Código do erro
+          example: "VALIDATION_ERROR"
+        message:
+          type: string
+          description: Mensagem de erro descritiva
+          example: "Email já cadastrado"
+        details:
+          type: object
+          description: Detalhes adicionais do erro
+          additionalProperties: true
+      required:
+        - error
+        - message
+
+  responses:
+    ValidationError:
+      description: Erro de validação
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Recurso não encontrado
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Erro interno do servidor
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  parameters:
+    UserId:
+      name: id
+      in: path
+      required: true
+      description: ID do usuário
+      schema:
+        type: integer
+        format: int64
+        minimum: 1

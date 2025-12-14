@@ -1,0 +1,31 @@
+{% extends "layout.html" %} 
+{% block title %}
+Novo Cliente
+{% endblock %}
+{% block pesquisa %}
+<form action="{{ url_for('save_cliente') }}" method="post">
+    <label for="nome">Nome:</label>
+    <br>
+    <input maxlength="100" type="text" id="nome" name="nome" style="width: 300px;" required value="{{ cliente.nome if cliente else '' }}" ><br><br>
+
+    <label for="cpf">CPF:</label>
+    <br>
+    <input maxlength="11" type="text" id="cpf" name="cpf" style="width: 200px;" required value="{{ cliente.cpf if cliente else '' }}"><br><br>
+      <label for="cpf">Endereço:</label>
+      <br>
+    <textarea maxlength="200" id="endereco" name="endereco" style="width: 400px;">{{ cliente.endereco if cliente else '' }}</textarea><br><br>
+
+    <label for="telefone">Telefone:</label>
+    <br>
+    <input maxlength="15" type="tel" id="telefone" name="telefone" style="width: 200px;" required value="{{ cliente.telefone if cliente else '' }}"><br><br>
+     <label for="email">Email:</label>
+     <br>
+    <input maxlength="100" type="email" id="email" name="email" style="width: 200px;" required value="{{ cliente.email if cliente else '' }}"><br><br>
+
+    <input type="hidden" name="id" value="{{ cliente.id if cliente else '' }}">
+    
+    <input type="submit" value="Salvar">
+
+    <a href="{{ url_for('list_clientes') }}">Cancelar</a>
+</form>
+{% endblock %}

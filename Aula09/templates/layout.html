@@ -1,0 +1,38 @@
+<html>
+    <title>
+        {% block title %}
+
+        
+        {% endblock %}
+    </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='site.css') }}">
+    <body>
+        <div style="display: flex; flex-direction: row;">
+        <div class="menu-lateral">
+            <ul>
+                <li><a href="#">Home</a> </li>
+                <li><a href="{{url_for('create_user')}}">Usuário</a> </li>
+                <li><a href="{{url_for('list_clientes')}}">Cliente</a> </li>
+                <li><a href="#">Produtos</a> </li>
+                <li><a href="#">Vendas</a> </li>
+            </ul>
+
+        </div>
+        
+        <div class="central" style="display: flex; align-items: center; margin-left: 200px; flex-direction: column; margin-top: 30px;">
+        <div style="display: flex; align-items: center; border: blue; ">
+        {% block pesquisa %}
+
+        
+        {% endblock %}
+        </div>
+
+        <div class="table_component" role="region" tabindex="0">
+            {% block resultado %}
+            {% endblock %}
+        </div>
+        </div>
+     </div>
+
+      </body>
+</html>

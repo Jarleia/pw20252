@@ -1,0 +1,42 @@
+{% extends "layout.html" %} 
+{% block title %}
+Clientes
+{% endblock %}
+
+{% block pesquisa %}
+  <form action="#" method="post">
+            <label for="username">CPF:</label>
+            <input type="text" id="cpf" name="cpf" value="{{ filtro.cpf if filtro else ''}}" ><br><br>
+           
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" value="{{ filtro.nome if filtro else ''}}" ><br><br>
+            <input type="submit" value="Pesquisar">
+            <a href="{{url_for('new_cliente')}}">Novo</a>
+    </form>
+{% endblock %}
+
+{% block resultado %}
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Telefone</th>
+                <th>Editar</th>
+                <th>Excluir</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cliente in clientes %}
+            <tr>
+                <td>{{ cliente.nome }}</td>
+                <td>{{ cliente.cpf }}</td>
+                <td>{{ cliente.telefone }}</td>
+                <td><a href="{{ url_for('edit_cliente', id=cliente.id) }}">Editar</a></td>
+                <td><a onclick="confirm('Deseja realmente exlcuir?')" href="{{ url_for('delete_cliente', id=cliente.id)}}">Excluir</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
